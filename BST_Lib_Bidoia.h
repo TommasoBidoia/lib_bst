@@ -1,34 +1,45 @@
 #include <iostream>
 #include <climits>
 
-struct Node {
-    int data;
-    int weight = 0;
-    node* right;
-    node* left;
-    node(int v) {
-        data = v;
-        right = nullptr;
-        left = nullptr;
-    }
+class Node{
+		int data;
+		int weight;
+		Node* lchild;
+		Node* rchild;
+public:
+	Node(int k){
+		data = k;
+		weight = 0;
+		rchild = nullptr;
+		lchild = nullptr;
+	}
+	Node* insertR(int k){
+		if(this->data == k){
+			this->weight++;
+			return this;
+		}
+		if( this->data > k){
+			 if (this->lchild == nullptr) {
+				this->lchild = new Node(k);
+        } else {
+            this->lchild = this->lchild->insertR(k);  
+        }
+		}
+		else {
+			if (this->rchild == nullptr) {
+				this->rchild = new Node(k);
+			} else {
+				this->rchild = this->rchild->insertR(k); 
+			}
+		}
+		return this;
+	}
+	void inOrder(){
+		if(this->lchild == nullptr) this->lchild->inOrder();
+		cout << this->data << " ";
+		if(this->rchild == nullptr) this->rchild->inOrder();
+	}
 };
-
-Node* Rc_Insert( Node* r , int k){
-    if(r == NULL){
-        return new Node(k);
-    }
-    if(r->data == k){
-        return r;
-    }
-    if( r->data > k){
-        r->left = Rc_insert( r->left , k );
-    }
-    else{
-        r->right = Rc_insert( r->right , k );
-    }
-    
-    return r;
-}
 
 Node* It_Insert(Node* r, int val){
 	Node* father{nullptr};
@@ -168,12 +179,6 @@ void preOrder(Node* node) {
 	cout << node->data << " ";
 	preOrder(node->left);
 	preOrder(node->right);
-}
-void inOrder(Node* node) {
-	inOrder(node->left);
-	if (node == nullptr) return;
-	cout << node->data << " ";
-	inOrder(node->right);
 }
 
 void posOrder(Node* node) {
