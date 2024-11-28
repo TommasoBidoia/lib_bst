@@ -41,51 +41,52 @@ public:
 	}
 };
 
-Node* It_Insert(Node* r, int val){
+Node* insertI(int k){
 	Node* father{nullptr};
-	Node* current{r};
-	bool lor;
+	Node* current{this};
+	bool check;
 	while(current != nullptr){
-		if(val < r->data){
+		if(k < current->data){
 			father = current;
 			current = current->left;
-			lor = true;
+			check = true;
 		}
-		else if(val > current->data){
+		else if(k > current->data){
 			father = current;
 			current = current->right;
-			lor = false;
+			check = false;
 		}
 	}
-	if(lor){
-		father->left = new Node(val);
-	}else if(!lor){
-		father->right = new Node(val);
+	if(check){
+		father->left = new Node(k);
+	}else if(!check){
+		father->right = new Node(k);
 	}
-	return r;
+	return this;
 }
 
-bool Rc_search(Node* r, int v) {
-    if (r == nullptr) {
+bool searchR(int k) {
+    if (this == nullptr) {
         return false;
     }
-    if (v == r->data) {
+    if (k == this->data) {
         return true;
     }
-    if (v < r->data) {
-        return Rc_search(r->left, v);
+    if (k < this->data) {
+        return this->left->searchR(k);
     }
-    return Rc_search(r->right, v);
+    return this->right->searchR(k);
 }
 
-bool It_search(Node* r, int v) {
-    while (r != nullptr) {
-        if (v == r->data) {
+bool searchI( int k) {
+	Node* current = this;
+    while (current != nullptr) {
+        if (k == current->data) {
             return true;
-        } else if (v < r->data) {
-            r = r->left;
+        } else if (k < current->data) {
+            current = current->left;
         } else {
-            r = r->right;
+           current = current->right;
         }
     }
     return false;
