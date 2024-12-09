@@ -1,5 +1,6 @@
 #include <iostream>
 #include <climits>
+using namespace std;
 
 class Node{
 		int data;
@@ -13,6 +14,8 @@ public:
 		rchild = nullptr;
 		lchild = nullptr;
 	}
+	friend ostream operator<<(const Node &n, ostream &os);
+	friend istream operator<<(const Node &n, istream &is);
 	Node* insertR(int k){
 		if(this->data == k){
 			this->weight++;
@@ -39,8 +42,6 @@ public:
 		cout << this->data << " ";
 		if(this->rchild == nullptr) this->rchild->inOrder();
 	}
-};
-
 Node* insertI(int k){
 	Node* father{nullptr};
 	Node* current{this};
@@ -230,4 +231,13 @@ bool isBST( Node *node , int max = INT_MAX , int min = INT_MIN){
 	if( node == nullptr) return true;
 	if( node->data > max || node->data < min) return false;
 	isBST( node->right , node->data, min) && isBST( node->left , max , node->data);
+}
+};
+ostream &operator<<(const Node &n, ostream &os){
+	os<< n.data << n.lchild << n.rchild;
+	return os;
+}
+istream &operator>>( Node &n, istream &is){
+	is>> n.data >> n.lchild >> n.rchild;
+	return is;
 }
