@@ -92,142 +92,80 @@ bool searchI( int k) {
     return false;
 }
 
-Node* Rc_Del(Node* r, int num) {
-    if (r == nullptr) {
-        return r;
-    }
-    if (num < r->data) {
-        r->left = Rc_Del(r->left, num);
-    } else if (num > r->data) {
-        r->right = Rc_Del(r->right, num);
-    } else {
-        if (r->left == nullptr) {
-            Node* temp = r->right;
-            delete r;
-            return temp;
-        } else if (r->right == nullptr) {
-            Node* temp = r->left;
-            delete r;
-            return temp;
+Node* deleteNode(int k) {
+    if (k < this->data) {
+        if (this->left != nullptr) {
+            this->left = this->left->deleteNode(k);
         }
-        Node* succparent = r;
-        Node* succ = r->right;
-        while (succ->left != nullptr) {
-            succparent = succ;
-            succ = succ->left;
+    } else if (k > this->data) { 
+        if (this->right != nullptr) {
+            this->right = this->right->deleteNode(k);
+        }
+    } else { 
+        
+        if (this->left == nullptr) {
+            Node* temp = this->right;
+            delete this;
+            return temp;
         }
         
-        if (succparent != r) {
-            succparent->left = succ->right;
-        } else {
-            succparent->right = succ->right;
+        if (this->right == nullptr) {
+            Node* temp = this->left;
+            delete this;
+            return temp;
         }
-        r->data = succ->data;
-        delete succ;
-    }
-    return r;
-}
-
-
-Node* It_Del(Node* r, int num) {
-    if (r == nullptr) return r;
-    Node* parent = nullptr;
-    Node* curr = r;
-    while (curr != nullptr && curr->data != num) {
-        parent = curr;
-        if (num < curr->data) {
-            curr = curr->left;
-        } else {
-            curr = curr->right;
-        }
-    }
-    if (curr == nullptr) return r;
-    if (curr->left == nullptr && curr->right == nullptr) {
-        if (curr != r) {
-            if (parent->left == curr) parent->left = nullptr;
-            else parent->right = nullptr;
-        } else {
-            r = nullptr;
-        }
-    }
-    else if (curr->left && curr->right) {
-        Node* succparent = curr;
-        Node* succ = curr->right;
+        
+        Node* succ = this->right; 
         while (succ->left != nullptr) {
-            succparent = succ;
             succ = succ->left;
         }
-        if (succparent != curr) succparent->left = succ->right;
-        else succparent->right = succ->right;
-        curr->data = succ->data;
-        curr = succ;
+        this->data = succ->data; 
+        this->right = this->right->deleteNode(succ->data); 
     }
-    else {
-        Node* child = (curr->left) ? curr->left : curr->right;
-        if (curr != r) {
-            if (curr == parent->left) parent->left = child;
-            else parent->right = child;
-        } else {
-            r = child;
+    return this;
+}
+
+void preOrder() {
+        cout << data << " ";
+        if (left != nullptr) {
+            left->preOrder();
         }
-    }
-    delete curr;
-    return r;
-}
-
-void preOrder(Node* node) {
-	if (node == nullptr) return;
-	cout << node->data << " ";
-	preOrder(node->left);
-	preOrder(node->right);
-}
-
-void posOrder(Node* node) {
-	posOrder(node->left);
-	posOrder(node->right);
-	if (node == nullptr) return;
-	cout << node->data << " ";
-}
-
-
-int Rc_height(Node *node){
-	if(node == NULL) return 0;
-	int l = Rc_height(node->left);
-	int r = Rc_height(node->right);
-	return max(l,r)+1;
-}
-
-int Iter_height(Node* r) {
-    if (r == nullptr) return 0;
-    int height = 0;
-    Node* current = r;
-    while (true) {
-        int levelNodes = 0;
-        Node* tmp = current;
-        while (tmp != nullptr) {
-            if (tmp->left != nullptr) levelNodes++;
-            if (tmp->right != nullptr) levelNodes++;
-            if( tmp->left != nullptr){
-				tmp = tmp->left;
-			}
-			else{
-				tmp = tmp->right;
-			}
+        if (right != nullptr) {
+            right->preOrder();
         }
-        if (levelNodes == 0) break;
-        height++;
-        if( current->left != nullptr){
-			current = current->left;
-		}
-		else{
-			current = current->right;
-		}
-    }
-    return height + 1; 
 }
 
-bool isBST( Node *node , int max = INT_MAX , int min = INT_MIN){
-	if( node == nullptr) return true;
-	if( node->data > max || node->data < min) return false;
-	isBST( node->right , node->data, min) && isBST( node->left , max , node->data);
+void inOrder(){
+		if(this->lchild == nullptr) this->lchild->inOrder();
+		cout << this->data << " ";
+		if(this->rchild == nullptr) this->rchild->inOrder();
+	}
+};
+void postOrder() {
+        if (left != nullptr) {
+            left->postOrder();
+        }
+        if (right != nullptr) {
+            right->postOrder();
+        }
+		cout << data << " ";
+}
+
+bool isBST() {
+    Node* prev = nullptr;
+    Node* stack[100];
+    int top = -1;
+    Node* current = this;
+    while (current != nullptr || top >= 0) {
+        while (current != nullptr) {
+            stack[++top] = current;
+            current = current->left;
+        }
+        current = stack[top--];
+        if (prev != nullptr && current->data <= prev->data)
+            return false;
+        prev = current;
+        current = current->right;
+    }
+    return true;
 }
